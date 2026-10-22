@@ -31,6 +31,15 @@ Catálogos expiram em 24 horas. Sessões encerradas permanecem disponíveis até
 
 ## Desenvolvimento
 
+Após instalar as dependências, ative os hooks locais uma vez por clone:
+
+```powershell
+poetry run pre-commit install
+poetry run pre-commit run --all-files
+```
+
+O pre-commit verifica lint, imports e formatação dos arquivos Python antes de cada commit. Os hooks usam o Ruff do ambiente Poetry; o CI continua executando a validação completa.
+
 ```powershell
 poetry run ruff check .
 poetry run ruff format --check .
