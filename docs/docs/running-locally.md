@@ -14,6 +14,16 @@ poetry run streamlit run src/f1/dashboard/app.py
 
 Acesse http://localhost:8501. A sidebar escolhe temporada, GP, sessão encerrada e pilotos. O padrão é a sessão mais recente do catálogo do ano escolhido, com os dois primeiros classificados disponíveis. Trocar filtros superiores limpa seleções dependentes.
 
+## Documentação local
+
+Com os grupos `dev` e `docs` instalados pelo Poetry:
+
+```bash
+poetry run task docs
+```
+
+Abra http://127.0.0.1:8000. Para validar e compilar sem iniciar o servidor, execute `poetry run task docs-build`. As tarefas usam a configuração em `docs/mkdocs.yml`.
+
 ## Variáveis de ambiente
 
 | Variável | Padrão | Uso |

@@ -36,8 +36,8 @@ poetry run mypy
 poetry run pytest
 poetry run pytest tests/integration
 poetry run pip-audit
-poetry run mkdocs build --strict -f docs/mkdocs.yml
-poetry run mkdocs serve -f docs/mkdocs.yml
+poetry run task docs-build
+poetry run task docs
 ```
 
 Cobertura mínima de linhas: 50% de todo o pacote `f1`. Testes unitários e de integração local não acessam a OpenF1. O pacote usa `ingestion`, `processing`, `domain`, `utils` e `dashboard`.

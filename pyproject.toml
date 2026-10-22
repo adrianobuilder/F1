@@ -29,6 +29,7 @@ ruff = ">=0.17,<0.18"
 mypy = ">=2.4,<3"
 pandas-stubs = ">=2.2,<3"
 pip-audit = ">=2.10,<3"
+taskipy = "^1.14.1"
 
 [tool.poetry.group.test]
 optional = true
@@ -51,6 +52,10 @@ src = ["src"]
 select = ["E4", "E7", "E9", "F", "I", "B", "UP", "SIM", "C90", "RUF"]
 [tool.ruff.lint.mccabe]
 max-complexity = 10
+
+[tool.taskipy.tasks]
+docs = {cmd = "mkdocs serve -f docs/mkdocs.yml", help = "Inicia a documentacao local"}
+docs-build = {cmd = "mkdocs build --strict -f docs/mkdocs.yml", help = "Valida e compila a documentacao"}
 
 [tool.pytest.ini_options]
 testpaths = ["tests/unit"]
