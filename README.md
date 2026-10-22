@@ -31,6 +31,8 @@ Catálogos expiram em 24 horas. Sessões encerradas permanecem disponíveis até
 
 ## Desenvolvimento
 
+A documentação é publicada automaticamente em **[adrianobuilder.github.io/F1](https://adrianobuilder.github.io/F1/)** após o CI passar na `main`. PRs e pushes em `dev` apenas validam a documentação.
+
 ```powershell
 poetry run ruff check .
 poetry run ruff format --check .

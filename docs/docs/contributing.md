@@ -6,7 +6,7 @@ Use branches feat/tema, fix/tema ou docs/tema e commits claros, preferencialment
 
 ## Integração contínua no GitHub
 
-O workflow `Quality` roda em pushes e pull requests para `main` e `dev`, além de permitir execução manual quando a versão com `workflow_dispatch` estiver na branch padrão. Execuções anteriores do mesmo PR ou branch são canceladas quando uma nova começa.
+O workflow `Quality` roda em pushes e pull requests para `main` e `dev`, além de permitir execução manual. Execuções anteriores de PRs e branches de desenvolvimento são canceladas quando uma nova começa. Na `main`, uma publicação em andamento não é interrompida.
 
 O job `quality` usa Ubuntu 24.04, Python 3.12 e Poetry 2.5.1. Sincroniza os grupos `dev`, `test` e `docs` pelo lockfile e executa:
 
@@ -25,6 +25,16 @@ Acompanhe em [GitHub Actions](https://github.com/adrianobuilder/F1/actions/workf
 poetry run pytest tests/unit tests/integration --cov-report=xml:reports/coverage.xml --junitxml=reports/pytest.xml
 ```
 
-O check `quality` deve ser obrigatório na proteção de `main`, com code review conforme política da equipe. O YAML sozinho não impede merge. Não há publicação ou deploy automático.
+O check `quality` é obrigatório na proteção de `main`, inclusive para administradores. O YAML sozinho não impede merge; essa exigência também está configurada no GitHub.
+
+## Publicação automática da documentação
+
+Depois que todos os checks passam em um push para `main`, o job `Publicar documentacao` publica o site em [https://adrianobuilder.github.io/F1/](https://adrianobuilder.github.io/F1/). A execução manual na `main` também publica. Pull requests e a branch `dev` somente validam; não publicam.
+
+O MkDocs transforma as páginas de `docs/docs/` em HTML dentro de `docs/site/`. O CI envia exatamente esse site ao GitHub Pages pelas actions oficiais `upload-pages-artifact` e `deploy-pages`, sem rebuild ou nova instalação no job de deploy. O conteúdo publicado é a documentação; o dashboard Streamlit continua sendo uma aplicação local.
+
+Em Settings → Pages → Build and deployment, a origem deve ser **GitHub Actions**. O ambiente de publicação é `github-pages`; apenas o job de deploy tem permissões `pages: write` e `id-token: write`. Não são necessários tokens pessoais ou atualização manual da branch `gh-pages`.
+
+Para atualizar o site, envie as alterações de documentação por PR para `main`. Uma falha de qualidade ou build impede uma nova publicação, preservando o site anterior. Após o merge, acompanhe o job de deploy na aba Actions e o endereço do ambiente publicado.
 
 Antes da entrega, informar os comandos realmente executados, seus resultados e limitações. Não ignorar falhas ou declarar testes aprovados sem execução. O projeto deve funcionar em Windows e no runner Linux.
