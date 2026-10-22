@@ -1,22 +1,35 @@
 name: Quality
+
 on:
   pull_request:
+    branches: [main, dev]
   push:
-    branches: [main]
+    branches: [main, dev]
+  workflow_dispatch:
+
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality:
     name: quality
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       POETRY_VERSION: "2.5.1"
       POETRY_VIRTUALENVS_IN_PROJECT: "true"
       POETRY_NO_INTERACTION: "1"
     steps:
-      - uses: actions/checkout@v7
-      - uses: actions/setup-python@v7
+      - name: Obter codigo
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Configurar Python 3.12
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
       - name: Instalar Poetry
@@ -24,11 +37,35 @@ jobs:
           curl --fail --silent --show-error --location https://install.python-poetry.org -o /tmp/install-poetry.py
           python /tmp/install-poetry.py --version "$POETRY_VERSION"
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
-      - run: poetry check --lock
-      - run: poetry sync --with dev,test,docs
-      - run: poetry run ruff check .
-      - run: poetry run ruff format --check .
-      - run: poetry run mypy
-      - run: poetry run pytest tests/unit tests/integration
-      - run: poetry run pip-audit
-      - run: poetry run mkdocs build --strict -f docs/mkdocs.yml
+      - name: Reutilizar downloads do Poetry
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/pypoetry
+          key: poetry-${{ runner.os }}-py312-${{ env.POETRY_VERSION }}-${{ hashFiles('poetry.lock') }}
+      - name: Validar manifest e lockfile
+        run: poetry check --lock
+      - name: Instalar dependencias do lockfile
+        run: poetry sync --with dev,test,docs
+      - name: Lint e imports
+        run: poetry run ruff check .
+      - name: Verificar formatacao
+        run: poetry run ruff format --check .
+      - name: Verificar tipos
+        run: poetry run mypy
+      - name: Testes unitarios, integracao e cobertura minima de 50%
+        run: >-
+          poetry run pytest tests/unit tests/integration
+          --cov-report=xml:reports/coverage.xml
+          --junitxml=reports/pytest.xml
+      - name: Auditar dependencias
+        run: poetry run pip-audit
+      - name: Validar documentacao
+        run: poetry run task docs-build
+      - name: Guardar relatorios de testes e cobertura
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: quality-reports
+          path: reports/
+          if-no-files-found: ignore
+          retention-days: 7
