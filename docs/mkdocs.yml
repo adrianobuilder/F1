@@ -1,4 +1,6 @@
 site_name: F1 — Dashboard histórico
+site_url: https://adrianobuilder.github.io/F1/
+repo_url: https://github.com/adrianobuilder/F1
 theme:
   name: material
   language: pt-BR
