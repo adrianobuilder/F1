@@ -1,5 +1,7 @@
 ﻿# F1 — Dashboard histórico
 
+[![Quality](https://github.com/adrianobuilder/F1/actions/workflows/quality.yml/badge.svg?branch=dev)](https://github.com/adrianobuilder/F1/actions/workflows/quality.yml)
+
 Dashboard local em português para explorar sessões históricas da OpenF1: resultados, comparação de pilotos, stints, boxes, posições e clima. Dados desde 2023, sem assinatura para consultas históricas.
 
 ## Instalação
