@@ -4,6 +4,19 @@ Seguir o SKILL.md da raiz: Poetry exclusivamente; pacotes em src; funções púb
 
 Use branches feat/tema, fix/tema ou docs/tema e commits claros, preferencialmente Conventional Commits. PRs devem incluir testes de mudanças de comportamento e atualização da documentação. Revisar o poetry.lock junto das dependências. Não versionar ambientes, snapshots, credenciais ou dados sensíveis.
 
+## Hooks locais de pre-commit
+
+A configuração `.pre-commit-config.yaml` executa lint/imports e verificação de formatação com Ruff nos arquivos Python do commit. Os hooks são locais (`language: system`) e usam `poetry run`, sem instalar ambientes paralelos ou versões diferentes das ferramentas.
+
+Após `poetry sync --with dev,test,docs`, instalar uma vez em cada clone:
+
+```bash
+poetry run pre-commit install
+poetry run pre-commit run --all-files
+```
+
+Se um hook falhar, corrija os problemas antes de repetir o commit. Para organizar imports e formatar, execute `poetry run ruff check . --fix` e `poetry run ruff format .`, revise as alterações e adicione os arquivos novamente ao stage. Os hooks apenas verificam; não alteram arquivos automaticamente. Eles complementam os gates do CI, que também executam testes, tipagem, auditoria e documentação.
+
 ## Integração contínua no GitHub
 
 O workflow `Quality` roda em pushes e pull requests para `main` e `dev`, além de permitir execução manual. Execuções anteriores de PRs e branches de desenvolvimento são canceladas quando uma nova começa. Na `main`, uma publicação em andamento não é interrompida.

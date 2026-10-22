@@ -1,0 +1,20 @@
+minimum_pre_commit_version: "4.0.0"
+default_install_hook_types: [pre-commit]
+default_stages: [pre-commit]
+
+# Os hooks usam o ambiente do Poetry, sem criar ambientes paralelos.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: Ruff - lint e imports
+        entry: poetry run ruff check
+        language: system
+        types_or: [python, pyi]
+        require_serial: true
+      - id: ruff-format
+        name: Ruff - verificar formatacao
+        entry: poetry run ruff format --check
+        language: system
+        types_or: [python, pyi]
+        require_serial: true

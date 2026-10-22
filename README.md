@@ -31,6 +31,15 @@ Catálogos expiram em 24 horas. Sessões encerradas permanecem disponíveis até
 
 ## Desenvolvimento
 
+Após instalar as dependências, ative os hooks locais uma vez por clone:
+
+```powershell
+poetry run pre-commit install
+poetry run pre-commit run --all-files
+```
+
+O pre-commit verifica lint, imports e formatação dos arquivos Python antes de cada commit. Os hooks usam o Ruff do ambiente Poetry; o CI continua executando a validação completa.
+
 A documentação é publicada automaticamente em **[adrianobuilder.github.io/F1](https://adrianobuilder.github.io/F1/)** após o CI passar na `main`. PRs e pushes em `dev` apenas validam a documentação.
 
 ```powershell
