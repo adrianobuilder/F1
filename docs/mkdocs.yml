@@ -1,0 +1,21 @@
+site_name: F1 — Dashboard histórico
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    scheme: slate
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+nav:
+  - Início: index.md
+  - Arquitetura: architecture.md
+  - Estrutura: project-structure.md
+  - Execução local: running-locally.md
+  - Testes: running-tests.md
+  - Contribuição: contributing.md
+  - Referência: reference.md
