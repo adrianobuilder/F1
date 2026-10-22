@@ -1,0 +1,34 @@
+name: Quality
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  quality:
+    name: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      POETRY_VERSION: "2.5.1"
+      POETRY_VIRTUALENVS_IN_PROJECT: "true"
+      POETRY_NO_INTERACTION: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Instalar Poetry
+        run: |
+          curl --fail --silent --show-error --location https://install.python-poetry.org -o /tmp/install-poetry.py
+          python /tmp/install-poetry.py --version "$POETRY_VERSION"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: poetry check --lock
+      - run: poetry sync --with dev,test,docs
+      - run: poetry run ruff check .
+      - run: poetry run ruff format --check .
+      - run: poetry run mypy
+      - run: poetry run pytest tests/unit tests/integration
+      - run: poetry run pip-audit
+      - run: poetry run mkdocs build --strict -f docs/mkdocs.yml
